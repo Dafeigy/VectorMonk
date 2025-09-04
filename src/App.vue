@@ -1,12 +1,12 @@
 <script setup>
-document.addEventListener('DOMContentLoaded', function () {
-  const connectBtn = document.getElementById('connect-btn');
-  const disconnectBtn = document.getElementById('disconnect-btn');
-  const statusMessage = document.getElementById('status-message');
-  const deviceName = document.getElementById('device-name');
-  const dataContent = document.getElementById('data-content');
-  const errorContainer = document.getElementById('error-container');
-  const errorContent = document.getElementById('error-content');
+document.addEventListener("DOMContentLoaded", function () {
+  const connectBtn = document.getElementById("connect-btn");
+  const disconnectBtn = document.getElementById("disconnect-btn");
+  const statusMessage = document.getElementById("status-message");
+  const deviceName = document.getElementById("device-name");
+  const dataContent = document.getElementById("data-content");
+  const errorContainer = document.getElementById("error-container");
+  const errorContent = document.getElementById("error-content");
 
   let device = null;
   let server = null;
@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 检查浏览器是否支持Web Bluetooth API
   if (!navigator.bluetooth) {
-    showError("浏览器不支持Web Bluetooth API。请使用Chrome、Edge或Opera浏览器。");
+    showError(
+      "浏览器不支持Web Bluetooth API。请使用Chrome、Edge或Opera浏览器。"
+    );
     connectBtn.disabled = true;
     return;
   }
@@ -27,18 +29,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // 显示错误信息
   function showError(message) {
     errorContent.textContent = message;
-    errorContainer.style.display = 'block';
+    errorContainer.style.display = "block";
     statusMessage.textContent = "错误";
     statusMessage.className = "disconnected";
   }
 
   // 隐藏错误信息
   function hideError() {
-    errorContainer.style.display = 'none';
+    errorContainer.style.display = "none";
   }
 
   // 连接设备
-  connectBtn.addEventListener('click', async function () {
+  connectBtn.addEventListener("click", async function () {
     if (isConnecting) return;
 
     isConnecting = true;
@@ -50,23 +52,20 @@ document.addEventListener('DOMContentLoaded', function () {
     try {
       // 请求蓝牙设备，筛选ESP32设备
       device = await navigator.bluetooth.requestDevice({
-        filters: [
-          { namePrefix: "[NUL4i]" },
-        ],
-        optionalServices: ['4fafc201-1fb5-459e-8fcc-c5c9c331914b']
+        filters: [{ namePrefix: "[NUL4i]" }],
+        optionalServices: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
       });
 
       statusMessage.textContent = "设备找到，正在连接...";
       deviceName.textContent = device.name || "未知设备";
 
       // 监听设备断开事件
-      device.addEventListener('gattserverdisconnected', onDisconnected);
+      device.addEventListener("gattserverdisconnected", onDisconnected);
 
       // 连接到GATT服务器
       await connectToDevice();
-
     } catch (error) {
-      console.error('连接错误:', error);
+      console.error("连接错误:", error);
       handleConnectionError(error);
     } finally {
       isConnecting = false;
@@ -91,12 +90,16 @@ document.addEventListener('DOMContentLoaded', function () {
       statusMessage.textContent = "已连接，正在获取服务...";
 
       // 获取服务
-      service = await server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b');
+      service = await server.getPrimaryService(
+        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+      );
 
       statusMessage.textContent = "服务已找到，正在获取特征...";
 
       // 获取特征
-      characteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8');
+      characteristic = await service.getCharacteristic(
+        "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+      );
 
       statusMessage.textContent = "已连接，等待数据...";
       statusMessage.className = "connected";
@@ -111,17 +114,19 @@ document.addEventListener('DOMContentLoaded', function () {
       // 设置定时读取
       if (readInterval) clearInterval(readInterval);
       readInterval = setInterval(readData, 30);
-
     } catch (error) {
-      console.error('连接错误:', error);
+      console.error("连接错误:", error);
 
       // 如果是断开错误，尝试重新连接
-      if (error.message.includes('disconnected') && reconnectAttempts < maxReconnectAttempts) {
+      if (
+        error.message.includes("disconnected") &&
+        reconnectAttempts < maxReconnectAttempts
+      ) {
         reconnectAttempts++;
         statusMessage.textContent = `尝试重新连接 (${reconnectAttempts}/${maxReconnectAttempts})...`;
 
         // 等待一段时间后重试
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return connectToDevice();
       }
 
@@ -130,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 断开连接
-  disconnectBtn.addEventListener('click', function () {
+  disconnectBtn.addEventListener("click", function () {
     if (device && device.gatt.connected) {
       device.gatt.disconnect();
     } else {
@@ -152,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (device) {
-      device.removeEventListener('gattserverdisconnected', onDisconnected);
+      device.removeEventListener("gattserverdisconnected", onDisconnected);
     }
   }
 
@@ -160,12 +165,14 @@ document.addEventListener('DOMContentLoaded', function () {
   function handleConnectionError(error) {
     let errorMsg = "连接错误: " + error.message;
 
-    if (error.message.includes('disconnected')) {
-      errorMsg += "\n\n解决方法:\n1. 确保ESP32设备已上电并在广播\n2. 尝试重新连接设备\n3. 检查设备是否在蓝牙范围内";
-    } else if (error.message.includes('user cancelled')) {
+    if (error.message.includes("disconnected")) {
+      errorMsg +=
+        "\n\n解决方法:\n1. 确保ESP32设备已上电并在广播\n2. 尝试重新连接设备\n3. 检查设备是否在蓝牙范围内";
+    } else if (error.message.includes("user cancelled")) {
       errorMsg = "用户取消了设备选择";
-    } else if (error.message.includes('not found')) {
-      errorMsg = "未找到设备。请确保:\n1. ESP32设备已上电\n2. 设备名以'ESP32'开头\n3. 设备在蓝牙范围内";
+    } else if (error.message.includes("not found")) {
+      errorMsg =
+        "未找到设备。请确保:\n1. ESP32设备已上电\n2. 设备名以'ESP32'开头\n3. 设备在蓝牙范围内";
     }
 
     showError(errorMsg);
@@ -180,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     try {
       const value = await characteristic.readValue();
-      const decoder = new TextDecoder('utf-8');
+      const decoder = new TextDecoder("utf-8");
       const message = decoder.decode(value);
 
       // 显示数据，添加时间戳
@@ -189,16 +196,18 @@ document.addEventListener('DOMContentLoaded', function () {
       dataContent.textContent = `[${timestamp}] \n${message}`;
 
       // 限制显示的行数
-      const lines = dataContent.textContent.split('\n');
+      const lines = dataContent.textContent.split("\n");
       if (lines.length > 20) {
-        dataContent.textContent = lines.slice(0, 20).join('\n');
+        dataContent.textContent = lines.slice(0, 20).join("\n");
       }
-
     } catch (error) {
-      console.error('读取数据错误:', error);
+      console.error("读取数据错误:", error);
 
       // 如果是断开错误，尝试重新连接
-      if (error.message.includes('disconnected') && reconnectAttempts < maxReconnectAttempts) {
+      if (
+        error.message.includes("disconnected") &&
+        reconnectAttempts < maxReconnectAttempts
+      ) {
         reconnectAttempts++;
         statusMessage.textContent = `连接断开，尝试重新连接 (${reconnectAttempts}/${maxReconnectAttempts})...`;
 
@@ -206,10 +215,10 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
           await connectToDevice();
         } catch (reconnectError) {
-          console.error('重连错误:', reconnectError);
+          console.error("重连错误:", reconnectError);
           handleConnectionError(reconnectError);
         }
-      } else if (error.message.includes('disconnected')) {
+      } else if (error.message.includes("disconnected")) {
         handleConnectionError(error);
       }
     }
@@ -333,33 +342,105 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <template>
-  <div id="header" class="h-[10%] bg-[#1c1c1e] w-full rounded-t-2xl"></div>
-  <div id="middle" class="w-full h-[85%] flex justify-between">
-    <div id="left" class="w-[15%] bg-[#1b1b1c] h-full flex justify-center items-center">
+  <div
+    id="main"
+    class="bg-gradient-to-r from-light-bg via-[#dedede] to-light-bg flex flex-col w-full h-full justify-center items-center rounded-2xl border-1 border-light-border"
+  >
+    <div
+      id="header"
+      class="border-b-1 border-light-border bg-light-glass h-[10%] w-full backdrop-blur-md rounded-t-2xl flex justify-center items-center"
+    >
+      <div class="flex ml-2 items-center w-full h-full">
+        <div class="w-1/2 h-full flex items-center">
+          <button
+            id="connect-btn"
+            class="ml-2 text-light-text dark:text-dark-theme w-1/10 flex items-center justify-center border-transparent hover:scale-105 cursor-pointer border-1 hover:border-light-border hover:backdrop-blur-lg transition-all ease-in-out duration-300 bg-light-glass h-3/5 rounded-xl mx-2"
+          >
+            <span class="text-light-text w-[30%]"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 24 24"
+                class=""
+              >
+                <g fill="none">
+                  <path
+                    d="M10.004 9.608V3.753c0-.646.752-.974 1.225-.58l.076.072l4.712 5.104a.75.75 0 0 1 .005 1.012l-.076.073l-3.077 2.564l3.077 2.566a.75.75 0 0 1 .137 1.002l-.066.083l-4.711 5.106c-.44.476-1.214.207-1.295-.404l-.007-.104v-5.863l-1.12.934a.75.75 0 0 1-1.04-1.075l.08-.077l2.08-1.734v-.87l-2.08-1.736a.75.75 0 0 1 .87-1.217l.09.065l1.12.934V3.753v5.855zm1.694 3.366l-.194.16v5.194l2.876-3.117l-2.682-2.237zM17 11a1 1 0 1 1 0 2a1 1 0 0 1 0-2zM6 11a1 1 0 1 1 0 2a1 1 0 0 1 0-2zm5.504-5.328v5.187l.194.162l2.682-2.234l-2.876-3.115z"
+                    fill="currentColor"
+                  ></path>
+                </g>
+              </svg>
+            </span>
+            <!-- <p class="text-sm mx-2 icontexthide">Connect</p> -->
+          </button>
+          <button
+            class="text-light-text dark:text-dark-theme w-1/10 flex items-center justify-center border-transparent hover:scale-105 cursor-pointer border-1 hover:border-light-border hover:backdrop-blur-lg transition-all ease-in-out duration-300 bg-light-glass h-3/5 rounded-xl mx-2"
+          >
+            <span class="text-light-text w-[30%]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2c2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2a4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6c-.6.6-.6 1.2-.5 2V21"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </span>
+            <!-- <p class="text-sm mx-2 icontexthide">Home</p> -->
+          </button>
+          <button
+            id="disconnect-btn"
+            class="ml-2 text-light-text dark:text-dark-theme w-1/10 flex items-center justify-center border-transparent hover:scale-105 cursor-pointer border-1 hover:border-light-border hover:backdrop-blur-lg transition-all ease-in-out duration-300 bg-light-glass h-3/5 rounded-xl mx-2"
+            disabled
+          >
+            <span class="text-light-text w-[30%]"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 21V3"></path>
+                  <path d="M15 6l-3-3l-3 3"></path>
+                  <path d="M9 21h6"></path>
+                </g>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="text-2xl text-center flex absolute">[VectorMonk]</div>
     </div>
-    <div id="right" class="w-full bg-[#1a1a1b] h-full flex justify-center items-center">
-      <div id="canvasContainer" class="h-[70%] w-[70%]  flex justify-center items-center rounded-2xl">
+    <div id="middle" class="w-full h-[85%] flex items-center justify-center">
+      <div
+        id="canvasContainer"
+        class="h-[70%] w-[70%] flex justify-center items-center rounded-2xl"
+      >
         <div class="container">
           <div class="content">
             <div class="status">
               <div class="status-icon">📶</div>
-              <div class="status-text text-white">
-                <h3>状态: <span id="status-message" >等待连接</span></h3>
+              <div class="status-text text-light-text">
+                <h3>状态: <span id="status-message">等待连接</span></h3>
                 <p>设备: <span id="device-name">未连接</span></p>
               </div>
             </div>
-
-            <div class="button-container">
-              <button id="connect-btn" class="connect-btn">
-                <span>连接设备</span>
-              </button>
-              <button id="disconnect-btn" class="disconnect-btn" disabled>
-                <span>断开连接</span>
-              </button>
-            </div>
-
             <div class="data-container">
-              <div class="data-title">
+              <div
+                class="data-title text-light-text flex items-center text-2xl mb-2"
+              >
                 <span>[NUL4i@ESP32S3]</span>
               </div>
               <div id="data-content" class="data-content">
@@ -375,38 +456,14 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
     </div>
+    <div
+      id="bottom"
+      class="w-full h-[5%] rounded-b-2xl bg-light-glass backdrop-blur-md rounded-t-2xl flex justify-center items-center"
+    ></div>
   </div>
-  <div id="bottom" class="w-full bg-[#1c1c1e] h-[5%] rounded-b-2xl"></div>
 </template>
 
 <style>
-body {
-  padding: 0;
-  margin: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-  background: #151517;
-  color: #333;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
 .container {
   width: 100%;
   max-width: 600px;
@@ -439,49 +496,6 @@ body {
   flex: 1;
 }
 
-.button-container {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-button {
-  flex: 1;
-  padding: 15px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.connect-btn {
-  background-color: rgb(27, 139, 121);
-  color: white;
-}
-
-.connect-btn:hover:not(:disabled) {
-  background-color: #27ae60;
-}
-
-.disconnect-btn {
-  background-color: #ad382b;
-  color: white;
-}
-
-.disconnect-btn:hover:not(:disabled) {
-  background-color: #c0392b;
-}
-
 .data-container {
   /* background-color: #f8f9fa; */
   border-radius: 8px;
@@ -489,14 +503,13 @@ button:disabled {
   margin-bottom: 20px;
 }
 
-.data-title {
+/* .data-title {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #eee;
   display: flex;
   align-items: center;
-}
+} */
 
 .data-title span {
   margin-left: 10px;

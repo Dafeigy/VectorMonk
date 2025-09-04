@@ -1,2 +1,32 @@
 @import './base.css';
 
+@theme {
+  --color-orange: #b2653b;
+  --color-green:#2C384F;
+  --color-darkred: #802520;
+  --color-yellow: #ba8530;
+  --color-dark: #181818;
+  --color-theme: #f5eddc;
+  --font-display: "Futura";
+  --animate-circle: circle 0.75s linear infinite;
+  --color-dark-bg: #151515;
+  --color-light-bg:#F7F7F7;
+  --color-light-second:#FAFAFA;
+  --color-light-white: #fff;
+  --color-dark-second:#232323;
+  --color-dark-black:#1E1E1E;
+  --color-dark-theme:#25A9A4;
+  --color-light-theme:#F88475;
+  --color-light-border:#DEDEDE;
+  --color-dark-border:#494949;
+  --color-light-glass:rgba(255,255,255,0.2);
+  --color-light-glass-theme:rgba(246,136,120,0.3);
+  --color-light-text:#333;
+}
+
+@layer components {
+  .aspect-16-9 {
+    aspect-ratio: 16 / 9;
+  }
+}
+

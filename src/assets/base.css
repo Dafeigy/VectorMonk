@@ -1,1 +1,9 @@
 @import "tailwindcss";
+@media (max-width: 60px) {
+  .icontexthide {
+    display: none;
+  }
+  .icondisplay {
+    width: 80%;
+  }
+}
