@@ -236,16 +236,17 @@ function initScene() {
   scene = new THREE.Scene();
   scene.background = null;
   // 2. 创建相机（透视相机）
+
+  let container = document.getElementById("canvasContainer");
+  const width = container.clientWidth;
+  const height = container.clientHeight;
   camera = new THREE.PerspectiveCamera(
     75,
-    window.innerWidth / window.innerHeight,
+    width / height,
     0.1,
     1000
   );
   camera.position.z = 5;
-  let container = document.getElementById("canvasContainer");
-  const width = container.clientWidth;
-  const height = container.clientHeight;
   // 3. 创建渲染器
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(width, height);
@@ -255,7 +256,7 @@ function initScene() {
 
 // 创建立方体
 function createCube() {
-  const geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+  const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
   const material = new THREE.MeshLambertMaterial({
     color: 0xf1a6b9,
   });
@@ -383,36 +384,31 @@ onUnmounted(() => {
       class="w-full h-[85%] flex-col justify-center items-center flex-1 overflow-y-auto no-scrollbar"
     >
       <div
-        class="second w-full h-full text-2xl text-center items-center justify-center flex" id="canvasContainer"
-      >
-      </div>
+        class="second w-full h-1/2 text-2xl text-center"
+        id="canvasContainer"
+      ></div>
       <div
-        class="h-full w-full flex justify-center items-center rounded-2xl flex-col"
+        class="h-1/3 w-full flex justify-center items-center rounded-2xl flex-col "
       >
         <div
           class="qmi-screen-container bg-white/30 max-w-[450px] w-full rounded-2xl shadow-2xl overflow-hidden dark:bg-[rgba(3,3,3,0.3)]"
         >
           <div class="p-[25px]">
-            <div
-              class="flex items-center border-l-[4px] dark:border-[salmon] border-indigo-300 p-[15px] mb-[25px] rounded-md"
-            >
-              <div class="mr-[15px] font-[24px]">📶</div>
-              <div class="flex-1 dark:text-light-white text-light-text">
-                <h3>状态: <span id="status-message">等待连接</span></h3>
-                <p>设备: <span id="device-name">未连接</span></p>
-              </div>
-            </div>
-            <div class="rounded-xl p-[20px] mb-[20px]">
+            <div class="rounded-xl dark:bg-[#2D3133] bg-[#252627] ">
               <div
                 class="data-title dark:text-light-white text-light-text flex items-center text-2xl mb-2"
               >
-                <span>[NUL4i@ESP32S3]</span>
+                <span class="text-white px-2 text-sm">[NUL4i@ESP32S3]</span>
               </div>
               <div
                 id="data-content"
-                class="rounded-xl whitespace-pre-wrap dark:text-[#ecf0f1] text-light-bg p-[15px] overflow-y-auto min-h-[100px] max-h-[200px] dark:bg-[#2D3133] bg-[#252627]"
+                class="text-xs rounded-xl whitespace-pre-wrap dark:text-[#ecf0f1] text-light-bg px-2 overflow-y-auto min-h-[100px] max-h-[200px] dark:bg-[#2D3133] bg-[#252627]"
               >
-                // 数据将显示在这里...
+                数据将显示在这里...<br></br><br></br>
+                ACCEL<br></br>
+                64.0,32.1,23.1<br></br>
+                GYRO<br></br>
+                64.0,32.1,23.1<br></br>
               </div>
             </div>
 
@@ -427,17 +423,17 @@ onUnmounted(() => {
       <div
         class="third w-full h-full text-2xl text-center items-center justify-center flex"
       >
-        3
+        NUL4i x T3-ESP32-DISPLAY
       </div>
     </div>
     <div
       id="bottom"
       class="w-full h-[5%] rounded-b-2xl bg-light-glass backdrop-blur-md flex items-center"
     >
-      <div id="device-status" class="mx-4 z-100 text-[#333]">
+      <div id="device-name" class="mx-4 z-100 text-[#333]">
         设备名称：<span class="text-[#e0904e]">未知</span>
       </div>
-      <div id="connect-state" class="mx-4 z-100 text-[#333]">
+      <div id="status-message" class="mx-4 z-100 text-[#333]">
         连接状态：<span class="text-[#e0904e]">未连接</span>
       </div>
       <div
