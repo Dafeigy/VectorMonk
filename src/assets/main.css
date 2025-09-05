@@ -23,6 +23,8 @@
   --color-light-glass-theme:rgba(246,136,120,0.3);
   --color-light-text:#333;
   --color-dark-glass:rgba(13,13,13,0.6);
+
+  --font-pixel:"depature", "fusion", "sans-serif";
 }
 
 @layer components {
@@ -31,3 +33,30 @@
   }
 }
 
+@layer utilities {
+  /* 隐藏 Chrome, Safari 和 Opera 的滚动条 */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* 隐藏 IE, Edge 和 Firefox 的滚动条 */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE 和 Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+@font-face {
+  font-family: "fusion";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("fusion-pixel.woff2") format('woff2');
+}
+
+@font-face {
+  font-family: "depature";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("DepartureMono-Regular.woff2") format('woff2');
+}

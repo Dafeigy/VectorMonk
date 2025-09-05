@@ -224,137 +224,90 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
-// import { ref, onMounted, onUnmounted } from "vue";
-// import * as THREE from "three";
+import { ref, onMounted, onUnmounted } from "vue";
+import * as THREE from "three";
 
-// const canvasContainer = ref(null);
-// let scene, camera, renderer, cube;
+const canvasContainer = ref(null);
+let scene, camera, renderer, cube;
 
-// // 初始化场景
-// function initScene() {
-//   // 1. 创建场景
-//   scene = new THREE.Scene();
-//   scene.background = new THREE.Color(0x333333);
-//   // 2. 创建相机（透视相机）
-//   camera = new THREE.PerspectiveCamera(
-//     75,
-//     window.innerWidth / window.innerHeight,
-//     0.1,
-//     1000
-//   );
-//   camera.position.z = 5;
-//   let container = document.getElementById("canvasContainer");
-//   const width = container.clientWidth;
-//   const height = container.clientHeight;
-//   // 3. 创建渲染器
-//   renderer = new THREE.WebGLRenderer({ antialias: true });
-//   renderer.setSize(width, height);
-//   document.getElementById("canvasContainer").appendChild(renderer.domElement);
-//   // 4. 挂载到DOM
-//   // canvasContainer.value.appendChild(renderer.domElement);
-// }
+// 初始化场景
+function initScene() {
+  // 1. 创建场景
+  scene = new THREE.Scene();
+  scene.background = null;
+  // 2. 创建相机（透视相机）
+  camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  camera.position.z = 5;
+  let container = document.getElementById("canvasContainer");
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  // 3. 创建渲染器
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(width, height);
+  renderer.setClearAlpha(0);
+  document.getElementById("canvasContainer").appendChild(renderer.domElement);
+  // 4. 挂载到DOM
+  // canvasContainer.value.appendChild(renderer.domElement);
+}
 
-// // 创建立方体
-// function createCube() {
-//   const geometry = new THREE.BoxGeometry(1, 1, 1);
-//   const material = new THREE.MeshBasicMaterial({
-//     color: 0x00ff00,
-//     wireframe: true,
-//   });
-//   cube = new THREE.Mesh(geometry, material);
-//   scene.add(cube);
-// }
+// 创建立方体
+function createCube() {
+  const geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+  const material = new THREE.MeshLambertMaterial({
+    color: 0xb2653b,
+  });
+  cube = new THREE.Mesh(geometry, material);
+  const spotLight = new THREE.SpotLight(0xffffff, 3000);
+  spotLight.position.set(10, 10, 10);
+  scene.add(spotLight);
+  
+  scene.add(cube);
+}
 
-// // 动画循环
-// function animate() {
-//   requestAnimationFrame(animate);
+// 动画循环
+function animate() {
+  requestAnimationFrame(animate);
 
-//   cube.rotation.x += 0.01;
-//   cube.rotation.y += 0.01;
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
 
-//   renderer.render(scene, camera);
-// }
+  renderer.render(scene, camera);
+}
 
-// const connectToBluetooth = async () => {
-//   try {
-//     // 请求蓝牙设备，指定服务UUID
-//     this.device = await navigator.bluetooth.requestDevice({
-//       filters: [
-//         { services: ['4fafc201-1fb5-459e-8fcc-c5c9c331914b'] }
-//       ]
-//     });
+onMounted(() => {
+  initScene();
+  createCube();
+  animate();
+});
 
-//     // 连接GATT服务器
-//     this.server = await this.device.gatt.connect();
-
-//     // 获取服务
-//     const service = await this.server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b'.toLowerCase());
-
-//     // 获取特征（这里使用常见的Nordic UART的RX特征UUID，用于通知）
-//     this.characteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8'.toLowerCase());
-
-//     // 开启通知
-//     await this.characteristic.startNotifications();
-
-//     // 监听特征值变化
-//     this.characteristic.addEventListener('characteristicvaluechanged', this.handleNotifications);
-
-//     // 将连接成功的信息显示出来
-//     this.messages.push('已连接蓝牙设备，开始监听通知...');
-//   } catch (error) {
-//     console.error('连接蓝牙失败:', error);
-//   }
-// };
-
-// // 处理通知事件
-// const handleNotifications = (event) => {
-//   const value = event.target.value;
-//   // 解析数据，假设是文本数据（UTF-8）
-//   const decoder = new TextDecoder('utf-8');
-//   const message = decoder.decode(value);
-//   this.messages.push(message);
-// };
-
-// // 在组件销毁时断开连接
-// function beforeUnmount() {
-//   if (this.characteristic) {
-//     this.characteristic.removeEventListener('characteristicvaluechanged', this.handleNotifications);
-//     this.characteristic.stopNotifications();
-//   }
-//   if (this.server) {
-//     this.server.disconnect();
-//   }
-// };
-
-// onMounted(() => {
-//   initScene();
-//   createCube();
-//   animate();
-// });
-
-// // 组件卸载时清理资源
-// onUnmounted(() => {
-//   if (renderer) {
-//     renderer.dispose();
-//     canvasContainer.value.removeChild(renderer.domElement);
-//   }
-// });background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
+// 组件卸载时清理资源
+onUnmounted(() => {
+  if (renderer) {
+    renderer.dispose();
+    canvasContainer.value.removeChild(renderer.domElement);
+  }
+});
 </script>
 
 <template>
   <div
     id="main"
-    class="shadow-2xl bg-gradient-to-r from-[#e0bf78] via-[#e6bd8f] to-[#f1a6b9] dark:bg-gradient-to-r dark:from-[#29323c] dark:via-[#485563] dark:to-[#29323c] flex flex-col aspect-16-9 h-full justify-center items-center rounded-2xl border-1 border-light-border dark:border-dark-border"
+    class="font-pixel shadow-2xl bg-gradient-to-r from-[#e0bf78] via-[#e6bd8f] to-[#f1a6b9] dark:bg-gradient-to-r dark:from-[#29323c] dark:via-[#485563] dark:to-[#29323c] flex flex-col aspect-16-9 h-full justify-center items-center rounded-2xl border-1 border-light-border dark:border-dark-border"
   >
     <div
       id="header"
-      class="border-b-1 border-light-border dark:border-dark-border bg-light-glass h-[10%] w-full backdrop-blur-md rounded-t-2xl flex justify-center items-center"
+      class="border-light-border dark:border-dark-border bg-light-glass h-[10%] w-full backdrop-blur-md rounded-t-2xl flex justify-center items-center"
     >
       <div class="flex ml-2 items-center w-full h-full">
         <div class="w-full h-full flex items-center">
           <button
             id="connect-btn"
-            class=" dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer  transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
+            class="shadow-2xl border-1 border-transparent dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
           >
             <span class="text-light-text w-[30%]"
               ><svg
@@ -374,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <!-- <p class="text-sm mx-2 icontexthide">Connect</p> -->
           </button>
           <button
-            class=" dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer  transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
+            class="shadow-2xl border-1 border-transparent dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
           >
             <span class="text-light-text w-[30%]">
               <svg
@@ -396,7 +349,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
           <button
             id="disconnect-btn"
-            class=" dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer  transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
+            class="shadow-2xl border-1 border-transparent dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
             disabled
           >
             <span class="text-light-text w-[30%]"
@@ -421,16 +374,24 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
         </div>
       </div>
-      <div class="text-2xl text-center flex absolute dark:text-white">[VectorMonk]</div>
+      <div class="text-2xl text-center flex absolute dark:text-white">
+        [VectorMonk]
+      </div>
     </div>
-    <div id="middle" class="w-full h-[85%] flex items-center justify-center">
+    <div
+      id="middle"
+      class="w-full h-[85%] flex-col justify-center items-center flex-1 overflow-y-auto no-scrollbar"
+    >
       <div
-        id="canvasContainer"
-        class="h-[70%] w-[70%] flex justify-center items-center rounded-2xl"
+        class="h-full w-full flex justify-center items-center rounded-2xl flex-col"
       >
-        <div class=" max-w-[600px] w-full rounded-2xl shadow-2xl overflow-hidden dark:bg-[rgba(3,3,3,0.3)]">
+        <div
+          class="qmi-screen-container bg-white/30 max-w-[450px] w-full rounded-2xl shadow-2xl overflow-hidden dark:bg-[rgba(3,3,3,0.3)]"
+        >
           <div class="p-[25px]">
-            <div class="flex items-center border-l-[4px] dark:border-[salmon] border-indigo-300 p-[15px] mb-[25px] rounded-md ">
+            <div
+              class="flex items-center border-l-[4px] dark:border-[salmon] border-indigo-300 p-[15px] mb-[25px] rounded-md"
+            >
               <div class="mr-[15px] font-[24px]">📶</div>
               <div class="flex-1 dark:text-light-white text-light-text">
                 <h3>状态: <span id="status-message">等待连接</span></h3>
@@ -443,7 +404,10 @@ document.addEventListener("DOMContentLoaded", function () {
               >
                 <span>[NUL4i@ESP32S3]</span>
               </div>
-              <div id="data-content" class="rounded-xl whitespace-pre-wrap dark:text-[#ecf0f1] text-light-bg p-[15px] overflow-y-auto min-h-[100px] max-h-[200px] dark:bg-[#2D3133] bg-[#252627]">
+              <div
+                id="data-content"
+                class="rounded-xl whitespace-pre-wrap dark:text-[#ecf0f1] text-light-bg p-[15px] overflow-y-auto min-h-[100px] max-h-[200px] dark:bg-[#2D3133] bg-[#252627]"
+              >
                 // 数据将显示在这里...
               </div>
             </div>
@@ -455,6 +419,15 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
       </div>
+      <div
+        class="second w-full h-full text-2xl text-center items-center justify-center flex"
+        id="canvasContainer"
+      ></div>
+      <div
+        class="third w-full h-full text-2xl text-center items-center justify-center flex"
+      >
+        3
+      </div>
     </div>
     <div
       id="bottom"
@@ -464,7 +437,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </template>
 
 <style>
-
 .data-content {
   min-height: 100px;
   max-height: 200px;
@@ -476,7 +448,6 @@ document.addEventListener("DOMContentLoaded", function () {
   font-family: monospace;
   white-space: pre-wrap;
 }
-
 
 .connected {
   color: #2ecc71;
