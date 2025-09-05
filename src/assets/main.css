@@ -22,6 +22,7 @@
   --color-light-glass:rgba(255,255,255,0.2);
   --color-light-glass-theme:rgba(246,136,120,0.3);
   --color-light-text:#333;
+  --color-dark-glass:rgba(13,13,13,0.6);
 }
 
 @layer components {

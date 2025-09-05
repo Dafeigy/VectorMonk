@@ -338,23 +338,23 @@ document.addEventListener("DOMContentLoaded", function () {
 //     renderer.dispose();
 //     canvasContainer.value.removeChild(renderer.domElement);
 //   }
-// });
+// });background-image: linear-gradient(60deg, #29323c 0%, #485563 100%);
 </script>
 
 <template>
   <div
     id="main"
-    class="bg-gradient-to-r from-light-bg via-[#dedede] to-light-bg flex flex-col w-full h-full justify-center items-center rounded-2xl border-1 border-light-border"
+    class="shadow-2xl bg-gradient-to-r from-[#e0bf78] via-[#e6bd8f] to-[#f1a6b9] dark:bg-gradient-to-r dark:from-[#29323c] dark:via-[#485563] dark:to-[#29323c] flex flex-col aspect-16-9 h-full justify-center items-center rounded-2xl border-1 border-light-border dark:border-dark-border"
   >
     <div
       id="header"
-      class="border-b-1 border-light-border bg-light-glass h-[10%] w-full backdrop-blur-md rounded-t-2xl flex justify-center items-center"
+      class="border-b-1 border-light-border dark:border-dark-border bg-light-glass h-[10%] w-full backdrop-blur-md rounded-t-2xl flex justify-center items-center"
     >
       <div class="flex ml-2 items-center w-full h-full">
-        <div class="w-1/2 h-full flex items-center">
+        <div class="w-full h-full flex items-center">
           <button
             id="connect-btn"
-            class="ml-2 text-light-text dark:text-dark-theme w-1/10 flex items-center justify-center border-transparent hover:scale-105 cursor-pointer border-1 hover:border-light-border hover:backdrop-blur-lg transition-all ease-in-out duration-300 bg-light-glass h-3/5 rounded-xl mx-2"
+            class=" dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer  transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
           >
             <span class="text-light-text w-[30%]"
               ><svg
@@ -374,7 +374,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <!-- <p class="text-sm mx-2 icontexthide">Connect</p> -->
           </button>
           <button
-            class="text-light-text dark:text-dark-theme w-1/10 flex items-center justify-center border-transparent hover:scale-105 cursor-pointer border-1 hover:border-light-border hover:backdrop-blur-lg transition-all ease-in-out duration-300 bg-light-glass h-3/5 rounded-xl mx-2"
+            class=" dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer  transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
           >
             <span class="text-light-text w-[30%]">
               <svg
@@ -396,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
           <button
             id="disconnect-btn"
-            class="ml-2 text-light-text dark:text-dark-theme w-1/10 flex items-center justify-center border-transparent hover:scale-105 cursor-pointer border-1 hover:border-light-border hover:backdrop-blur-lg transition-all ease-in-out duration-300 bg-light-glass h-3/5 rounded-xl mx-2"
+            class=" dark:hover:border-dark-border text-light-text aspect-square flex items-center justify-center hover:scale-105 cursor-pointer  transition-all ease-in-out duration-300 h-3/5 rounded-xl mx-2 dark:hover:bg-light-glass hover:bg-light-glass"
             disabled
           >
             <span class="text-light-text w-[30%]"
@@ -421,34 +421,34 @@ document.addEventListener("DOMContentLoaded", function () {
           </button>
         </div>
       </div>
-      <div class="text-2xl text-center flex absolute">[VectorMonk]</div>
+      <div class="text-2xl text-center flex absolute dark:text-white">[VectorMonk]</div>
     </div>
     <div id="middle" class="w-full h-[85%] flex items-center justify-center">
       <div
         id="canvasContainer"
         class="h-[70%] w-[70%] flex justify-center items-center rounded-2xl"
       >
-        <div class="container">
-          <div class="content">
-            <div class="status">
-              <div class="status-icon">📶</div>
-              <div class="status-text text-light-text">
+        <div class=" max-w-[600px] w-full rounded-2xl shadow-2xl overflow-hidden dark:bg-[rgba(3,3,3,0.3)]">
+          <div class="p-[25px]">
+            <div class="flex items-center border-l-[4px] dark:border-[salmon] border-indigo-300 p-[15px] mb-[25px] rounded-md ">
+              <div class="mr-[15px] font-[24px]">📶</div>
+              <div class="flex-1 dark:text-light-white text-light-text">
                 <h3>状态: <span id="status-message">等待连接</span></h3>
                 <p>设备: <span id="device-name">未连接</span></p>
               </div>
             </div>
-            <div class="data-container">
+            <div class="rounded-xl p-[20px] mb-[20px]">
               <div
-                class="data-title text-light-text flex items-center text-2xl mb-2"
+                class="data-title dark:text-light-white text-light-text flex items-center text-2xl mb-2"
               >
                 <span>[NUL4i@ESP32S3]</span>
               </div>
-              <div id="data-content" class="data-content">
+              <div id="data-content" class="rounded-xl whitespace-pre-wrap dark:text-[#ecf0f1] text-light-bg p-[15px] overflow-y-auto min-h-[100px] max-h-[200px] dark:bg-[#2D3133] bg-[#252627]">
                 // 数据将显示在这里...
               </div>
             </div>
 
-            <div id="error-container" class="error-container">
+            <div id="error-container" class="error-container hidden">
               <h3>错误信息</h3>
               <div id="error-content" class="error-content"></div>
             </div>
@@ -458,62 +458,12 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
     <div
       id="bottom"
-      class="w-full h-[5%] rounded-b-2xl bg-light-glass backdrop-blur-md rounded-t-2xl flex justify-center items-center"
+      class="w-full h-[5%] rounded-b-2xl bg-light-glass backdrop-blur-md flex justify-center items-center"
     ></div>
   </div>
 </template>
 
 <style>
-.container {
-  width: 100%;
-  max-width: 600px;
-  /* background-color: rgba(255, 255, 255, 0.92); */
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-.content {
-  padding: 25px;
-}
-
-.status {
-  /* background-color: #f8f9fa; */
-  border-left: 4px solid salmon;
-  padding: 15px;
-  margin-bottom: 25px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-}
-
-.status-icon {
-  font-size: 24px;
-  margin-right: 15px;
-}
-
-.status-text {
-  flex: 1;
-}
-
-.data-container {
-  /* background-color: #f8f9fa; */
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-/* .data-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-} */
-
-.data-title span {
-  margin-left: 10px;
-}
 
 .data-content {
   min-height: 100px;
@@ -527,36 +477,6 @@ document.addEventListener("DOMContentLoaded", function () {
   white-space: pre-wrap;
 }
 
-.instructions {
-  background-color: #fff8e1;
-  border-left: 4px solid #ffc107;
-  padding: 15px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.instructions h3 {
-  margin-bottom: 10px;
-  color: #ff9800;
-}
-
-.instructions ul {
-  padding-left: 20px;
-}
-
-.instructions li {
-  margin-bottom: 8px;
-}
-
-.blink {
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.5;
-  }
-}
 
 .connected {
   color: #2ecc71;
