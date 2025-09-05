@@ -251,21 +251,19 @@ function initScene() {
   renderer.setSize(width, height);
   renderer.setClearAlpha(0);
   document.getElementById("canvasContainer").appendChild(renderer.domElement);
-  // 4. 挂载到DOM
-  // canvasContainer.value.appendChild(renderer.domElement);
 }
 
 // 创建立方体
 function createCube() {
   const geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
   const material = new THREE.MeshLambertMaterial({
-    color: 0xb2653b,
+    color: 0xf1a6b9,
   });
   cube = new THREE.Mesh(geometry, material);
-  const spotLight = new THREE.SpotLight(0xffffff, 3000);
-  spotLight.position.set(10, 10, 10);
+  const spotLight = new THREE.SpotLight(0xffffff, 1500);
+  spotLight.position.set(10, 10, 15);
   scene.add(spotLight);
-  
+
   scene.add(cube);
 }
 
@@ -374,7 +372,9 @@ onUnmounted(() => {
           </button>
         </div>
       </div>
-      <div class="text-2xl text-center flex absolute dark:text-white">
+      <div
+        class="text-2xl text-center flex absolute dark:text-white text-light-text"
+      >
         [VectorMonk]
       </div>
     </div>
@@ -382,6 +382,10 @@ onUnmounted(() => {
       id="middle"
       class="w-full h-[85%] flex-col justify-center items-center flex-1 overflow-y-auto no-scrollbar"
     >
+      <div
+        class="second w-full h-full text-2xl text-center items-center justify-center flex" id="canvasContainer"
+      >
+      </div>
       <div
         class="h-full w-full flex justify-center items-center rounded-2xl flex-col"
       >
@@ -419,10 +423,7 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
-      <div
-        class="second w-full h-full text-2xl text-center items-center justify-center flex"
-        id="canvasContainer"
-      ></div>
+
       <div
         class="third w-full h-full text-2xl text-center items-center justify-center flex"
       >
@@ -431,8 +432,21 @@ onUnmounted(() => {
     </div>
     <div
       id="bottom"
-      class="w-full h-[5%] rounded-b-2xl bg-light-glass backdrop-blur-md flex justify-center items-center"
-    ></div>
+      class="w-full h-[5%] rounded-b-2xl bg-light-glass backdrop-blur-md flex items-center"
+    >
+      <div id="device-status" class="mx-4 z-100 text-[#333]">
+        设备名称：<span class="text-[#e0904e]">未知</span>
+      </div>
+      <div id="connect-state" class="mx-4 z-100 text-[#333]">
+        连接状态：<span class="text-[#e0904e]">未连接</span>
+      </div>
+      <div
+        id="copyright"
+        class="absolute left-1/2 transform -translate-x-1/2 z-100 text-[#3b3b3b]"
+      >
+        NUL4i@2025-2026
+      </div>
+    </div>
   </div>
 </template>
 
